@@ -1,13 +1,100 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql" // Veya MySQL/SQLite (kullandığın veritabanına göre)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  fullName     String
+  role         Role          @default(USER)
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String   @unique // Örn: Mercedes-Benz, BMW, Porsche
+  logoUrl   String // Glassmorphism UI'da göstereceğimiz logo
+  slug      String   @unique
+  cars      Car[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Car {
+  id          String  @id @default(uuid())
+  brandId     String
+  brand       Brand   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  name        String // Örn: AMG GT3 Evo, M4 Competition
+  slug        String  @unique
+  description String
+  basePrice   Decimal @db.Decimal(10, 2) // Günlük taban kiralama bedeli
+
+  // Teknik Özellikler (UI panellerinde göstermek için)
+  horsepower Int
+  zeroTo100  Float // Örn: 3.2 (saniye)
+  topSpeed   Int // Örn: 320 (km/s)
+  year       Int
+
+  variants  CarVariant[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([brandId])
+  @@index([slug])
+}
+
+model CarVariant {
+  id              String @id @default(uuid())
+  carId           String
+  car             Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+  name            String // Örn: Carbon Edition, Track Pack
+  colorName       String // Örn: Obsidian Black, Magma Orange
+  colorHex        String // Örn: #FF4500 (R3F materyalini anında boyamak için!)
+  modelUrl        String // Örn: /models/mercedes_amg_gt3.glb (Draco sıkıştırılmış)
+  priceMultiplier Float  @default(1.0) // Örn: Carbon paket %20 daha pahalı (1.2)
+
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([carId])
+}
+
+model Reservation {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  variantId String
+  variant   CarVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  startDate  DateTime
+  endDate    DateTime
+  totalDays  Int
+  totalPrice Decimal           @db.Decimal(10, 2)
+  status     ReservationStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Kiralama çakışmalarını hızlıca sorgulamak ve performans için hayati indeksler!
+  @@index([variantId, startDate, endDate])
+  @@index([userId])
 }
