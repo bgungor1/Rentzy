@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Veya MySQL/SQLite (kullandığın veritabanına göre)
+  provider  = "postgresql"
 }
 
 enum Role {
