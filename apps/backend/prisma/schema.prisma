@@ -22,6 +22,7 @@ model User {
   id           String        @id @default(uuid())
   email        String        @unique
   fullName     String
+  password     String
   role         Role          @default(USER)
   reservations Reservation[]
   createdAt    DateTime      @default(now())
@@ -49,8 +50,8 @@ model Car {
 
   // Teknik Özellikler (UI panellerinde göstermek için)
   horsepower Int
-  zeroTo100  Float // Örn: 3.2 (saniye)
-  topSpeed   Int // Örn: 320 (km/s)
+  zeroTo100  Float
+  topSpeed   Int
   year       Int
 
   variants  CarVariant[]
