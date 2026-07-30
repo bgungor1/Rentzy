@@ -42,7 +42,7 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-md border border-white/10 bg-neutral-900/80 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl relative z-10">
-      {/* Header Branding */}
+
       <div className="mb-8 text-center">
         <Link href="/" className="inline-flex items-center gap-2 mb-4 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 via-emerald-500 to-cyan-500 p-[1px]">
@@ -60,14 +60,12 @@ function LoginForm() {
         </p>
       </div>
 
-      {/* Server Error Alert Box */}
       {serverError && (
         <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
           {serverError}
         </div>
       )}
 
-      {/* Login Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
         <FormInput
           label="E-Posta Adresi"
@@ -94,7 +92,6 @@ function LoginForm() {
         </button>
       </form>
 
-      {/* Footer Link */}
       <div className="mt-8 text-center text-xs text-neutral-400 border-t border-white/10 pt-6">
         Hesabınız yok mu?{' '}
         <Link href="/register" className="text-emerald-400 font-semibold hover:underline">

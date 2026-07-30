@@ -46,7 +46,6 @@ function RegisterForm() {
 
   return (
     <div className="w-full max-w-md border border-white/10 bg-neutral-900/80 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl relative z-10">
-      {/* Header Branding */}
       <div className="mb-8 text-center">
         <Link href="/" className="inline-flex items-center gap-2 mb-4 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 via-emerald-500 to-cyan-500 p-[1px]">
@@ -64,21 +63,18 @@ function RegisterForm() {
         </p>
       </div>
 
-      {/* Server Error Alert Box */}
       {serverError && (
         <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
           {serverError}
         </div>
       )}
 
-      {/* Success Alert Box */}
       {successMessage && (
         <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium animate-pulse">
           {successMessage}
         </div>
       )}
 
-      {/* Register Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <FormInput
           label="Ad Soyad"
@@ -113,7 +109,6 @@ function RegisterForm() {
         </button>
       </form>
 
-      {/* Footer Link */}
       <div className="mt-8 text-center text-xs text-neutral-400 border-t border-white/10 pt-6">
         Zaten hesabınız var mı?{' '}
         <Link href="/login" className="text-emerald-400 font-semibold hover:underline">

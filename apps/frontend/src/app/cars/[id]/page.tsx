@@ -31,7 +31,6 @@ export default function CarDetailPage({ params }: CarDetailPageProps) {
   return (
     <main className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-emerald-500 selection:text-black">
       <div className="pt-28 pb-20 max-w-7xl mx-auto px-6 space-y-8">
-        {/* Breadcrumb & Navigation Back */}
         <div className="flex items-center justify-between">
           <Link
             href="/#garage"
@@ -53,7 +52,6 @@ export default function CarDetailPage({ params }: CarDetailPageProps) {
           </span>
         </div>
 
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-6">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight">
@@ -64,7 +62,6 @@ export default function CarDetailPage({ params }: CarDetailPageProps) {
             </p>
           </div>
 
-          {/* Quick Stats Badges */}
           <div className="flex items-center gap-4">
             <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-center">
               <span className="block text-[10px] font-mono text-neutral-400 uppercase">Güç</span>
@@ -81,14 +78,10 @@ export default function CarDetailPage({ params }: CarDetailPageProps) {
           </div>
         </div>
 
-        {/* Main 3D Showcase & Rental Action Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-          {/* 3D WebGL Interactive Showcase (3 Columns) */}
           <div className="lg:col-span-3">
             <CarShowcase initialCarId={car.id} className="h-[75vh] min-h-[550px]" />
           </div>
-
-          {/* Rental Action Sidebar Card (1 Column) */}
           <div className="lg:col-span-1 bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-6 rounded-3xl space-y-6 shadow-2xl sticky top-28">
             <div>
               <span className="text-xs font-mono text-neutral-400 uppercase">Günlük Kiralama</span>
@@ -113,20 +106,17 @@ export default function CarDetailPage({ params }: CarDetailPageProps) {
               </div>
             </div>
 
-            {/* Notification Result Box */}
             {rentResult && (
               <div
-                className={`p-4 rounded-xl text-xs font-medium border ${
-                  rentResult.success
+                className={`p-4 rounded-xl text-xs font-medium border ${rentResult.success
                     ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                     : 'bg-red-500/10 border-red-500/30 text-red-400'
-                }`}
+                  }`}
               >
                 {rentResult.message}
               </div>
             )}
 
-            {/* Rent CTA Button */}
             <button
               onClick={handleRentNow}
               disabled={loading}
