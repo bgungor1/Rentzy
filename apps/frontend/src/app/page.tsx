@@ -13,17 +13,14 @@ export default function HomePage() {
     selectedBrand === 'ALL'
       ? DEFAULT_CAR_MODELS
       : DEFAULT_CAR_MODELS.filter((car) =>
-          car.brand.toLowerCase().includes(selectedBrand.toLowerCase())
-        );
+        car.brand.toLowerCase().includes(selectedBrand.toLowerCase())
+      );
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-emerald-500 selection:text-black overflow-x-hidden">
-      {/* 1. CINEMATIC HERO SECTION */}
       <section className="relative pt-36 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
-        {/* Ambient Glow Effects */}
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-amber-500/10 via-emerald-500/15 to-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Status Pill */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <span className="text-xs font-mono tracking-widest text-emerald-400 uppercase">
@@ -31,7 +28,6 @@ export default function HomePage() {
           </span>
         </div>
 
-        {/* Hero Title */}
         <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-500 max-w-5xl">
           Hayalinizdeki Supercar’ı 3D İnceleyin & Kiralayın
         </h1>
@@ -41,7 +37,6 @@ export default function HomePage() {
           sesini ve rengini hissedin, dakikalar içinde kiralayın.
         </p>
 
-        {/* CTA Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
           <Link
             href="/showroom"
@@ -66,7 +61,6 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Key Performance Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-4xl mt-16 pt-12 border-t border-white/10">
           <div>
             <span className="text-3xl font-black text-white">6+</span>
@@ -95,10 +89,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. GSAP SCROLL BRAND SECTION */}
       <BrandScrollSection selectedBrand={selectedBrand} onSelectBrand={setSelectedBrand} />
 
-      {/* 3. FLEET GARAGE SECTION */}
       <section id="garage" className="py-16 max-w-7xl mx-auto px-6 space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
           <div>
@@ -114,7 +106,6 @@ export default function HomePage() {
           </span>
         </div>
 
-        {/* Car Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredCars.map((car) => (
             <CarCard key={car.id} car={car} />
@@ -122,7 +113,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. FOOTER SECTION */}
       <footer className="border-t border-white/10 bg-neutral-950 py-12 px-6 mt-20">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-neutral-500 text-xs font-mono">
           <div className="flex items-center gap-3">

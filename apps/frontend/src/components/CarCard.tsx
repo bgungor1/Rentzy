@@ -10,11 +10,9 @@ interface CarCardProps {
 export default function CarCard({ car }: CarCardProps) {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/60 backdrop-blur-xl p-6 transition-all duration-500 hover:-translate-y-2 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 flex flex-col justify-between">
-      {/* Subtle Glow Header */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-500" />
 
       <div>
-        {/* Category & Year Badges */}
         <div className="flex items-center justify-between mb-4 relative z-10">
           <span className="text-xs font-mono font-semibold tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 uppercase">
             {car.brand}
@@ -24,7 +22,6 @@ export default function CarCard({ car }: CarCardProps) {
           </span>
         </div>
 
-        {/* Car Name & Category */}
         <h3 className="text-2xl font-black text-white group-hover:text-emerald-300 transition-colors tracking-tight mb-1">
           {car.name}
         </h3>
@@ -32,7 +29,6 @@ export default function CarCard({ car }: CarCardProps) {
           {car.category}
         </p>
 
-        {/* Specs Grid */}
         <div className="grid grid-cols-3 gap-2 py-4 border-y border-white/10 mb-6 bg-white/[0.02] rounded-xl px-3 text-center">
           <div>
             <span className="block text-[10px] uppercase font-mono tracking-wider text-neutral-500">
@@ -55,7 +51,6 @@ export default function CarCard({ car }: CarCardProps) {
         </div>
       </div>
 
-      {/* Action Footer */}
       <div className="flex items-center justify-between pt-2">
         <div>
           <span className="block text-[10px] uppercase font-mono tracking-wider text-neutral-500">
