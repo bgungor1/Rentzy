@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { Suspense, useState, useRef, useEffect, useLayoutEffect, useMemo } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import {
   useGLTF,
@@ -54,16 +54,17 @@ interface CarMeshProps {
 
 function CarMesh({ modelPath, customColor }: CarMeshProps) {
   const { scene } = useGLTF(modelPath);
+  const clonedScene = useMemo(() => scene.clone(true), [scene]);
   const { invalidate } = useThree();
 
   useLayoutEffect(() => {
-    if (!scene) return;
+    if (!clonedScene) return;
 
-    scene.scale.set(1, 1, 1);
-    scene.updateMatrixWorld(true);
+    clonedScene.scale.set(1, 1, 1);
+    clonedScene.updateMatrixWorld(true);
 
     const box = new THREE.Box3();
-    scene.traverse((child) => {
+    clonedScene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh && child.visible) {
         const mesh = child as THREE.Mesh;
         if (mesh.geometry) {
@@ -86,17 +87,17 @@ function CarMesh({ modelPath, customColor }: CarMeshProps) {
 
       if (maxDim > 0 && isFinite(maxDim)) {
         const targetScale = 4.5 / maxDim;
-        scene.scale.setScalar(targetScale);
+        clonedScene.scale.setScalar(targetScale);
       }
     }
 
     invalidate();
-  }, [scene, modelPath, invalidate]);
+  }, [clonedScene, modelPath, invalidate]);
 
   useEffect(() => {
-    if (!scene) return;
+    if (!clonedScene) return;
 
-    scene.traverse((child) => {
+    clonedScene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         if (!mesh.material) return;
@@ -159,11 +160,11 @@ function CarMesh({ modelPath, customColor }: CarMeshProps) {
     });
 
     invalidate();
-  }, [scene, customColor, invalidate]);
+  }, [clonedScene, customColor, invalidate]);
 
   return (
     <Center top>
-      <primitive object={scene} />
+      <primitive object={clonedScene} />
     </Center>
   );
 }
@@ -241,7 +242,7 @@ export default function CarShowcase({
 
       <div className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing">
         <Canvas
-          frameloop="demand"
+          frameloop="always"
           dpr={[1, 1.5]}
           performance={{ min: 0.5 }}
           camera={{ position: [4.5, 2, 5.5], fov: 40 }}
