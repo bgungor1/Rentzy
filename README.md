@@ -1,4 +1,4 @@
-# 🏎️ Rentzy - Modern Rent-a-Car Platform
+# 🏎️ Rentzy - Premium 3D Car Showroom & Rental Platform
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -6,49 +6,64 @@
 [![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![Three.js](https://img.shields.io/badge/Three.js-black?style=flat-square&logo=three.js&logoColor=white)](https://threejs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![pnpm](https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
 
-Rentzy is a full-stack, visually driven rent-a-car platform featuring immersive 3D model integration, advanced scroll animations, and a robust role-based architecture. Built within a modern monorepo structure, it ensures end-to-end type safety and scalable development.
+Rentzy is a modern full-stack rental platform featuring an interactive 3D WebGL showroom, dynamic supercar customization, and reservation management. Built within a clean `pnpm` monorepo architecture, it strictly isolates the Next.js presentation layer from the NestJS business logic and database operations.
 
 ---
 
 ## 🏗 Architecture & Tech Stack
 
-This project leverages **pnpm workspaces** to manage a monorepo containing both the client and the API architectures, ensuring seamless orchestration between services.
+The workspace is organized as a **pnpm monorepo** containing two main applications:
 
 ### 🎨 Frontend (`apps/frontend`)
-*   **Framework:** [Next.js](https://nextjs.org/) (App Router)
-*   **3D Integration:** [Three.js](https://threejs.org/), [React Three Fiber (R3F)](https://docs.pmnd.rs/react-three-fiber), [Drei](https://github.com/pmndrs/drei)
-*   **Animations:** [GSAP](https://greensock.com/gsap/) & [ScrollTrigger](https://greensock.com/scrolltrigger/)
-*   **State Management:** [Zustand](https://github.com/pmndrs/zustand)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+* **Framework:** Next.js 16 (App Router)
+* **3D Engine:** Three.js, React Three Fiber (R3F), `@react-three/drei`
+* **Styling:** Tailwind CSS (Glassmorphism Dark Aesthetics)
+* **Form & Validation:** React Hook Form & Zod
+* **State & Server Actions:** Next.js Server Actions & HTTP-only JWT Cookie Session Management
 
 ### ⚙️ Backend (`apps/backend`)
-*   **Framework:** [NestJS](https://nestjs.com/)
-*   **Database:** [PostgreSQL](https://www.postgresql.org/)
-*   **ORM:** [Prisma](https://www.prisma.io/)
-*   **Authentication:** JWT (JSON Web Tokens) with Passport strategy
+* **Framework:** NestJS (Modular Architecture)
+* **Database & ORM:** PostgreSQL & Prisma ORM
+* **Authentication:** JWT (JSON Web Tokens) with Passport strategy & HTTP-only Cookies
+* **Validation & Security:** `class-validator`, Zod schemas, CORS, Rate Limiting
 
 ---
 
-## ✨ Core Features
+## ✨ Key Features
 
-*   **Scrollytelling & 3D Integration:** Interactive 3D car models integrated seamlessly into the DOM using R3F and animated via GSAP for a high-performance visual experience.
-*   **Role-Based Access Control (RBAC):** Secure routing and data access managed by NestJS Guards for distinct user roles (`Admin`, `Company`, `Member`).
-*   **End-to-End Type Safety:** Shared TypeScript interfaces and Prisma-generated schemas across the frontend and backend.
-*   **Optimized Asset Loading:** Lazy-loaded 3D models and transient state updates via Zustand to maintain 60fps rendering performance.
+* **3D Showroom & Garage:** Interactive WebGL 3D car viewer (`CarShowcase`) supporting real-time material paint customization, engine sound simulation, camera orbit controls, and variant previews.
+* **Supercar Fleet Catalog:** Brand filtering (Ferrari, BMW M, Mercedes-AMG, Porsche), responsive car cards (`CarCard`), and brand carousel section (`BrandScrollSection`).
+* **Dynamic Car Detail & Rental:** Dedicated supercar detail pages (`/cars/[id]`) displaying engine specs, performance metrics (HP, 0-100 acceleration, top speed), and instant rental actions.
+* **Overlapping Reservation Logic:** Backend validation engine that prevents duplicate or overlapping booking dates for car variants using date range queries.
+* **Authentication Flow:** User registration and login flows (`/login`, `/register`) using React Hook Form, Zod validation, and secure JWT session management.
+* **Unified DRY Layout:** Global Next.js App Router root layout managing shared `Navbar` and `Footer` components across all application routes.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-rentzy/
+Rentzy/
 ├── apps/
-│   ├── frontend/       # Next.js web application
-│   └── backend/        # NestJS REST API
-├── pnpm-workspace.yaml # Monorepo configuration
-├── package.json        # Root dependencies and scripts
-└── README.md           # Documentation
+│   ├── frontend/                 # Next.js Web Application
+│   │   ├── src/
+│   │   │   ├── actions/          # Server actions (Auth & Rental)
+│   │   │   ├── app/              # Next.js App Router pages & layout
+│   │   │   ├── components/       # Shared UI, 3D Showcase & Navbar/Footer
+│   │   │   ├── constants/        # Car models & showcase mock metadata
+│   │   │   └── validations/      # Zod validation schemas
+│   └── backend/                  # NestJS REST API
+│       ├── prisma/               # Schema & DB Migrations
+│       └── src/
+│           ├── auth/             # Auth module, JWT strategies & guards
+│           ├── cars/             # Car catalog & brand controllers/services
+│           ├── reservations/     # Overlap-safe booking logic & queries
+│           └── users/            # User account management
+├── ai-rules.md                   # Project engineering rules & standards
+├── pnpm-workspace.yaml           # Monorepo configuration
+└── package.json                  # Root dependencies & scripts
 ```
 
 ---
@@ -56,48 +71,48 @@ rentzy/
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   **Node.js** (v18 or higher)
-*   **pnpm** (v8 or higher)
-*   **PostgreSQL** database
+* **Node.js** (v18 or higher)
+* **pnpm** (v8 or higher)
+* **PostgreSQL** database instance (or Supabase / local Postgres)
 
 ### Installation
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/yourusername/rentzy.git
-    cd rentzy
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/bgungor1/Rentzy.git
+   cd Rentzy
+   ```
 
-2.  **Install dependencies:**
-    ```bash
-    pnpm install
-    ```
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-3.  **Environment Setup:**
-    Navigate to `apps/backend` and copy the `.env.example` to `.env`.
-    ```bash
-    cp apps/backend/.env.example apps/backend/.env
-    ```
-    Update the `DATABASE_URL` in `.env` with your PostgreSQL credentials.
+3. **Environment Setup:**
+   Configure environment files for both apps:
+   - Copy `apps/backend/.env.example` to `apps/backend/.env` and update `DATABASE_URL` and `JWT_SECRET`.
+   - Copy `apps/frontend/.env.local.example` (or create `.env.local`) to configure `NEXT_PUBLIC_API_URL`.
 
-4.  **Database Migration:**
-    ```bash
-    cd apps/backend
-    pnpm exec prisma migrate dev
-    cd ../..
-    ```
+4. **Database Migration & Prisma Client:**
+   ```bash
+   cd apps/backend
+   pnpm exec prisma migrate dev
+   cd ../..
+   ```
 
-### Running the Application
+---
 
-Open two separate terminals to start the development servers:
+## 🏃 Running the Application
 
-**Terminal 1 (Backend):**
+You can start both frontend and backend development servers in separate terminals:
+
+**Backend Server (NestJS API on port 4000):**
 ```bash
 cd apps/backend
 pnpm run start:dev
 ```
 
-**Terminal 2 (Frontend):**
+**Frontend Application (Next.js on port 3000):**
 ```bash
 cd apps/frontend
 pnpm run dev
@@ -105,14 +120,5 @@ pnpm run dev
 
 ---
 
-## 🛠 Development Guidelines
-
-*   **Commit Standard:** Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification (e.g., `feat:`, `fix:`, `chore:`).
-*   **3D Assets:** Ensure all `.glb`/`.gltf` models are **Draco-compressed** before adding them to the `/public` directory to maintain optimal performance.
-*   **Code Style:** Strict TypeScript usage is required for both frontend and backend to ensure workspace-wide type integrity.
-*   **Linting & Formatting:** Run `pnpm lint` and `pnpm format` to ensure code consistency.
-
----
-
 ## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
