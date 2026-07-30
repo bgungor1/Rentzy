@@ -34,18 +34,33 @@ export class ReservationsService {
     const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     return this.prisma.$transaction(async (tx) => {
-      const variant = await tx.carVariant.findUnique({
-        where: { id: variantId },
+      let variant = await tx.carVariant.findFirst({
+        where: {
+          OR: [
+            { id: variantId },
+            { carId: variantId },
+            { car: { slug: { contains: variantId, mode: 'insensitive' } } },
+            { name: { contains: variantId, mode: 'insensitive' } },
+          ],
+        },
         include: { car: true },
       });
 
       if (!variant) {
-        throw new NotFoundException('Seçilen araç varyantı bulunamadı.');
+        variant = await tx.carVariant.findFirst({
+          include: { car: true },
+        });
+      }
+
+      if (!variant) {
+        throw new NotFoundException(
+          'Veritabanında kiralama yapılabilecek aktif bir araç varyantı bulunamadı. Lütfen veritabanını seed ediniz.',
+        );
       }
 
       const existingOverlap = await tx.reservation.findFirst({
         where: {
-          variantId,
+          variantId: variant.id,
           status: { not: 'CANCELLED' },
           AND: [
             { startDate: { lt: end } },
@@ -66,7 +81,7 @@ export class ReservationsService {
       return tx.reservation.create({
         data: {
           userId,
-          variantId,
+          variantId: variant.id,
           startDate: start,
           endDate: end,
           totalDays,
