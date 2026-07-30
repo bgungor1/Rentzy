@@ -1,26 +1,21 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { loginSchema, registerSchema, LoginInput, RegisterInput } from '@/validations/auth.schema';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
+export async function loginAction(payload: LoginInput) {
+  const parsed = loginSchema.safeParse(payload);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message || 'Geçersiz giriş bilgileri.' };
+  }
 
-export interface RegisterPayload {
-  email: string;
-  password: string;
-  fullName: string;
-}
-
-export async function loginAction(payload: LoginPayload) {
   try {
     const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(parsed.data),
     });
 
     const data = await res.json();
@@ -48,12 +43,17 @@ export async function loginAction(payload: LoginPayload) {
   }
 }
 
-export async function registerAction(payload: RegisterPayload) {
+export async function registerAction(payload: RegisterInput) {
+  const parsed = registerSchema.safeParse(payload);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message || 'Geçersiz kayıt bilgileri.' };
+  }
+
   try {
     const res = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(parsed.data),
     });
 
     const data = await res.json();
@@ -76,4 +76,10 @@ export async function logoutAction() {
   const cookieStore = await cookies();
   cookieStore.delete('access_token');
   return { success: true };
+}
+
+export async function checkAuthAction() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('access_token')?.value;
+  return !!token;
 }

@@ -17,7 +17,9 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
     if (isAuthRoute && token) {
-        return NextResponse.redirect(new URL('/', request.url));
+        const redirectParam = request.nextUrl.searchParams.get('redirect');
+        const destination = redirectParam ? redirectParam : '/';
+        return NextResponse.redirect(new URL(destination, request.url));
     }
 
     return NextResponse.next();
