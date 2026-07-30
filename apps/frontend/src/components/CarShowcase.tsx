@@ -21,12 +21,8 @@ export { DEFAULT_CAR_MODELS, COLOR_PRESETS };
 
 export const CAR_MODELS = DEFAULT_CAR_MODELS;
 
-DEFAULT_CAR_MODELS.forEach((car) => {
-  try {
-    useGLTF.preload(car.modelPath);
-  } catch (err) {
-  }
-});
+// Draco WebAssembly Decoder path configuration for @react-three/drei
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
 
 function CanvasLoader() {
   const { progress } = useProgress();
@@ -53,8 +49,44 @@ interface CarMeshProps {
 }
 
 function CarMesh({ modelPath, customColor }: CarMeshProps) {
-  const { scene } = useGLTF(modelPath);
-  const clonedScene = useMemo(() => scene.clone(true), [scene]);
+  const { scene } = useGLTF(modelPath, true);
+
+  // Deep clone scene nodes & materials to isolate state and avoid shared material side-effects
+  const clonedScene = useMemo(() => {
+    if (!scene) return null;
+    const clone = scene.clone(true);
+    clone.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (Array.isArray(mesh.material)) {
+          mesh.material = mesh.material.map((m) => m.clone());
+        } else if (mesh.material) {
+          mesh.material = mesh.material.clone();
+        }
+      }
+    });
+    return clone;
+  }, [scene]);
+
+  // Memory cleanup (GPU & RAM disposal) when switching models or unmounting
+  useEffect(() => {
+    return () => {
+      if (clonedScene) {
+        clonedScene.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            mesh.geometry?.dispose();
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach((m) => m?.dispose());
+            } else if (mesh.material) {
+              mesh.material.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, [clonedScene]);
+
   const { invalidate } = useThree();
 
   useLayoutEffect(() => {
@@ -162,6 +194,8 @@ function CarMesh({ modelPath, customColor }: CarMeshProps) {
     invalidate();
   }, [clonedScene, customColor, invalidate]);
 
+  if (!clonedScene) return null;
+
   return (
     <Center top>
       <primitive object={clonedScene} />
@@ -242,7 +276,7 @@ export default function CarShowcase({
 
       <div className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing">
         <Canvas
-          frameloop="always"
+          frameloop={autoRotate ? "always" : "demand"}
           dpr={[1, 1.5]}
           performance={{ min: 0.5 }}
           camera={{ position: [4.5, 2, 5.5], fov: 40 }}
@@ -340,6 +374,11 @@ export default function CarShowcase({
                   onClick={() => {
                     setSelectedCarId(car.id);
                     setSelectedColor("ORIGINAL");
+                  }}
+                  onMouseEnter={() => {
+                    try {
+                      useGLTF.preload(car.modelPath, true);
+                    } catch (e) {}
                   }}
                   className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden ${isSelected
                     ? "bg-emerald-500/10 border-emerald-500 text-white shadow-lg shadow-emerald-500/10"
